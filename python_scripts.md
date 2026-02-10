@@ -133,6 +133,11 @@ that allows you to embed dependency information directly into the script
 file. Tools like `uv`{.verbatim} (a fast Python package manager) can
 read this header and automatically set up the environment for you.
 
+```{=org}
+#+RESULTS[b3a143a9d3ffb6b10bccf134e617ef4318364ed7]:
+```
+![Flowchart showing uv taking a script with metadata, creating a temporary environment, installing dependencies, and executing the code](fig/uv-pep723-flow.png)
+
 We can add a special comment block at the top of our script:
 
 ``` {.python tangle="data/generate_data_np_uv.py"}
@@ -302,18 +307,24 @@ The magic happens in this line:
 
 This is a chain of tools:
 
-1.  **pixi exec**: We ask Pixi to create an environment.
-2.  **–spec eon**: We explicitly request the `eon`{.verbatim} package
+1.  **pixi exec**: Create an environment with `pixi`{.verbatim}.
+2.  **–spec eon**: Explicitly request the `eon`{.verbatim} package
     (which contains the binary `eonclient`{.verbatim}).
-3.  **–spec uv**: We explicitly request `uv`{.verbatim}.
-4.  **– uv run**: Once Pixi has set up the environment with eOn and
-    `uv`{.verbatim}, it hands control over to `uv run`{.verbatim}.
+3.  **–spec uv**: Explicitly request `uv`{.verbatim}.
+4.  **– uv run**: Once the outer environment exists with
+    `eOn`{.verbatim} and `uv`{.verbatim}, it hands control over to
+    `uv run`{.verbatim}.
 5.  **PEP 723**: `uv run`{.verbatim} reads the script comments and
     installs the Python libraries (`ase`{.verbatim},
     `rgpycrumbs`{.verbatim}).
 
-This gives us the best of both worlds: Pixi provides the compiled
-binaries, and UV handles the fast Python resolution.
+This gives us the best of both worlds: `pixi` provides the compiled
+binaries, and `uv` handles the fast Python resolution.
+
+```{=org}
+#+RESULTS[aa278f3c87957881f9fbc5dc632c76d1fc12d2ee]:
+```
+![Diagram showing the nested layers: Pixi providing system binaries like eonclient, wrapping UV which provides Python libraries like numpy, both supporting the script](fig/pixi-uv-stack.png)
 
 ### The Result
 

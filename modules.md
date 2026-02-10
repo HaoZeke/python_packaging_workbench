@@ -107,7 +107,7 @@ bugs!
 :::
 
 ```{=org}
-#+RESULTS[b89543340c8059dcec6d74851cfb6cbdb6791a7b]:
+#+RESULTS[f61c12f9db08f20e8a6a27cda51290890e345782]:
 ```
 ![Search order for packages](fig/python-import-search-path.png)
 
@@ -204,7 +204,7 @@ it, Python's search through `sys.path`{.verbatim} fails to find it.
 :::
 
 ```{=org}
-#+RESULTS[831658e66470ba62e7d469f8cf9e2d99fd7f8258]:
+#+RESULTS[ee48a63200ba0a649484b95681826ae5bad2e1fc]:
 ```
 ![Directory structure for current setup](fig/python-package-structure.png)
 
