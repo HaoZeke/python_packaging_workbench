@@ -1,0 +1,431 @@
+#+EXPORT_FILE_NAME: ../../episodes/python_scripts.md
+#+OPTIONS: toc:nil author:nil date:nil num:nil title:nil
+#+MACRO: mdheader @@markdown:$1@@
+#+PROPERTY: header-args:python :session onePy :results output :exports both :cache yes :wrap src python
+
+#+begin_export markdown
+---
+title: "Writing Reproducible Python"
+teaching: 20
+exercises: 10
+---
+#+end_export
+
+#+begin_questions
+- What is the difference between the standard library and third-party packages?
+- How do I share a script so that it runs on someone else's computer?
+#+end_questions
+
+#+begin_objectives
+- Import and use the =pathlib= standard library.
+- Identify when a script requires external dependencies (like =numpy=).
+- Write a self-contained script that declares its own dependencies using inline metadata.
+- Share a script which reproducibly handles =conda= dependencies alongside Python.
+#+end_objectives
+
+* The Humble Script
+
+Most research software starts as a single file. You have some data, you need to
+analyze it, and you write a sequence of commands to get the job done.
+
+Let's start by creating a script that generates some data and saves it.
+We will use the standard library module =pathlib= to handle file paths safely
+across operating systems (Windows/macOS/Linux).
+
+#+begin_src python :tangle data/generate_data.py
+import random
+from pathlib import Path
+
+# Define output directory
+DATA_DIR = Path("data")
+DATA_DIR.mkdir(exist_ok=True)
+
+def generate_trajectory(n_steps=100):
+    print(f"Generating trajectory with {n_steps} steps...")
+    path = [0.0]
+    for _ in range(n_steps):
+        # Random walk step
+        step = random.uniform(-0.5, 0.5)
+        path.append(path[-1] + step)
+    return path
+
+if __name__ == "__main__":
+    traj = generate_trajectory()
+    output_file = DATA_DIR / "trajectory.txt"
+    
+    with open(output_file, "w") as f:
+        for point in traj:
+            f.write(f"{point}\n")
+    
+    print(f"Saved to {output_file}")
+#+end_src
+
+#+RESULTS[55e680b58b7d139bd83520a7ac787060efd60a94]:
+#+begin_src python
+Generating trajectory with 100 steps...
+Saved to data/trajectory.txt
+#+end_src
+
+#+begin_src sh
+head -n 3 data/trajectory.txt
+#+end_src
+
+#+RESULTS:
+|                 0.0 |
+| 0.26061738860297956 |
+|  0.3579801208269566 |
+
+This script uses only *Built-in* modules (=random=, =pathlib=). You can send
+this file to anyone with Python installed, and it will run.
+
+** The Need for External Libraries
+
+Standard Python is powerful, but for scientific work, we almost always need the
+"Scientific Stack": =numpy=, =pandas/polars=, or =matplotlib=.
+
+Let's modify our script to calculate statistics using =numpy=.
+
+#+begin_src python :tangle data/generate_data_np.py
+import random
+from pathlib import Path
+import numpy as np # new dependency!!
+
+DATA_DIR = Path("data")
+DATA_DIR.mkdir(exist_ok=True)
+
+def generate_trajectory(n_steps=100):
+    # Use numpy for efficient array generation
+    steps = np.random.uniform(-0.5, 0.5, n_steps)
+    trajectory = np.cumsum(steps)
+    return trajectory
+
+if __name__ == "__main__":
+    traj = generate_trajectory()
+    print(f"Mean position: {np.mean(traj):.4f}")
+    print(f"Std Dev: {np.std(traj):.4f}")
+#+end_src
+
+#+begin_challenge
+{{{mdheader(## The Dependency Problem)}}}
+
+If you send this updated file to a colleague who just installed Python, what happens when they run it?
+
+#+begin_solution
+*It crashes.*
+
+#+begin_src python
+ModuleNotFoundError: No module named 'numpy'
+#+end_src
+
+Your colleague now has to figure out how to install =numpy=. Do they use =pip=?
+=conda=? What version? This is the start of "Dependency Hell."
+#+end_solution
+#+end_challenge
+
+* The Modern Solution: PEP 723 Metadata
+
+Traditionally, you would send a =requirements.txt= file alongside your script,
+or leave comments in the script, or try to add documentation in an email.
+
+But files get separated, and versions get desynchronized.
+
+[[https://peps.python.org/pep-0723/][*PEP 723*]] is a Python standard that allows you to embed dependency information
+directly into the script file. Tools like =uv= (a fast Python package manager)
+can read this header and automatically set up the environment for you.
+
+We can add a special comment block at the top of our script:
+
+#+begin_src python :tangle data/generate_data_np_uv.py :results none
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "numpy",
+# ]
+# ///
+
+import numpy as np
+
+print("Hello I don't crash anymore..")
+# ... rest of script ...
+#+end_src
+
+Now, instead of manually installing =numpy=, you run the script using =uv=:
+
+#+begin_src sh :wrap src sh
+uv run data/generate_data_np_uv.py
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+Hello I don't crash anymore..
+#+end_src
+
+When you run this command:
+1. =uv= reads the metadata block.
+2. It creates a temporary, isolated virtual environment.
+3. It installs the specified version of =numpy=.
+4. It executes the script.
+
+This guarantees that anyone with =uv= installed can run your script immediately,
+without messing up their own python environments.
+
+* Beyond Python: The =pixibang=
+
+PEP 723 is fantastic for installable Python packages [fn:: most often this means
+things you can find on [[https://pypi.org/][PyPI]]).
+
+However, for scientific software, we often rely on compiled binaries and
+libraries that are not Python packages—things like =LAMMPS=, =GROMACS=, or *eOn*
+[[https://eondocs.org][a server-client tool]] for exploring the potential energy surfaces of atomistic
+systems.
+
+If your script needs to run a C++ binary, =pip= and =uv= cannot help you easily.
+This is where *pixi* comes in.
+
+[[https://pixi.sh/][~pixi~ is a package manager]] built on the =conda= ecosystem. It can install
+Python packages *and* compiled binaries. We can use a [[https://rgoswami.me/snippets/pixi-shebang-ghcoauth/]["pixibang" script]] to
+effectively replicate the PEP 723 experience, but for the entire system stack.
+
+** Example: Running minimizations with eOn and PET-MAD
+
+Let's write a script that drives a geometry minimization [fn:: A subset of the [[https://atomistic-cookbook.org/examples/eon-pet-neb/eon-pet-neb.html][Cookbook recipe]] for saddle point optimization]. This requires:
+-  [[https://docs.metatensor.org/metatrain/latest/index.html][*Metatrain/Torch*]] :: For the machine learning potential.
+-  [[http://rgpycrumbs.rgoswami.me/][*rgpycrumbs*]] :: For helper utilities.
+-  [[https://eondocs.org][*eOn Client*]] :: The compiled C++ binary that actually performs the minimization.
+
+First, we need to create the input geometry file =pos.con= in our directory:
+
+#+begin_src bash
+cat << 'EOF' > pos.con
+Generated by ASE
+preBox_header_2
+25.00   25.00   25.00
+90.00   90.00   90.00
+postBox_header_1
+postBox_header_2
+4
+2 1 2 4
+12.01 16.00 14.01 1.01
+C
+Coordinates of Component 1
+  11.04   11.77   12.50 0    0
+  12.03   10.88   12.50 0    1
+O
+Coordinates of Component 2
+  14.41   13.15   12.44 0    2
+N
+Coordinates of Component 3
+  13.44   13.86   12.46 0    3
+  12.50   14.51   12.49 0    4
+H
+Coordinates of Component 4
+  10.64   12.19   13.43 0    5
+  10.59   12.14   11.58 0    6
+  12.49   10.52   13.42 0    7
+  12.45   10.49   11.57 0    8
+EOF
+#+end_src
+
+Now, create the script =eon_min.py=. Note the shebang line!
+
+#+begin_src python :tangle data/eon_min.py
+#!/usr/bin/env -S pixi exec --spec eon --spec uv -- uv run
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "ase",
+#     "metatrain",
+#     "rgpycrumbs",
+# ]
+# ///
+
+from pathlib import Path
+import subprocess
+
+from rgpycrumbs.eon.helpers import write_eon_config
+from rgpycrumbs.run.jupyter import run_command_or_exit
+
+repo_id = "lab-cosmo/upet"
+tag = "v1.1.0"
+url_path = f"models/pet-mad-s-{tag}.ckpt"
+fname = Path(url_path.replace(".ckpt", ".pt"))
+url = f"https://huggingface.co/{repo_id}/resolve/main/{url_path}"
+fname.parent.mkdir(parents=True, exist_ok=True)
+subprocess.run(
+    [
+        "mtt",
+        "export",
+        url,
+        "-o",
+        fname,
+    ],
+    check=True,
+)
+print(f"Successfully exported {fname}.")
+
+min_settings = {
+    "Main": {"job": "minimization", "random_seed": 706253457},
+    "Potential": {"potential": "Metatomic"},
+    "Metatomic": {"model_path": fname.absolute()},
+    "Optimizer": {
+        "max_iterations": 2000,
+        "opt_method": "lbfgs",
+        "max_move": 0.5,
+        "converged_force": 0.01,
+    },
+}
+
+write_eon_config(".", min_settings)
+run_command_or_exit(["eonclient"], capture=True, timeout=300)
+#+end_src
+
+Make it executable and run it:
+
+#+begin_src bash
+chmod +x eon_min.py
+./eon_min.py
+#+end_src
+
+** Unpacking the Shebang
+
+The magic happens in this line:
+=#!/usr/bin/env -S pixi exec --spec eon --spec uv -- uv run=
+
+This is a chain of tools:
+1.  *pixi exec*: We ask Pixi to create an environment.
+2.  *--spec eon*: We explicitly request the =eon= package (which contains the binary =eonclient=).
+3.  *--spec uv*: We explicitly request =uv=.
+4.  *-- uv run*: Once Pixi has set up the environment with eOn and =uv=, it hands control over to =uv run=.
+5.  *PEP 723*: =uv run= reads the script comments and installs the Python libraries (=ase=, =rgpycrumbs=).
+
+This gives us the best of both worlds: Pixi provides the compiled binaries, and UV handles the fast Python resolution.
+
+** The Result
+
+When executed, the script downloads the model, exports it using =metatrain=, configures eOn, and runs the binary.
+
+#+begin_example
+[INFO] - Using best model from epoch None
+[INFO] - Model exported to '.../models/pet-mad-s-v1.1.0.pt'
+Successfully exported models/pet-mad-s-v1.1.0.pt.
+Wrote eOn config to 'config.ini'
+EON Client
+VERSION: 01e09a5
+...
+[Matter]          0     0.00000e+00         1.30863e+00      -53.90300
+[Matter]          1     1.46767e-02         6.40732e-01      -53.91548
+...
+[Matter]         51     1.56025e-03         9.85039e-03      -54.04262
+Minimization converged within tolerence
+Saving result to min.con
+Final Energy: -54.04261779785156
+#+end_example
+
+#+begin_challenge
+{{{mdheader(## Challenge: The Pure Python Minimization)}}}
+
+Create a script named =ase_min.py= that performs the exact same minimization on =pos.con=, but uses the [[https://ase-lib.org/][atomic simulation environment (ASE)]] built-in =LBFGS= optimizer instead of eOn.
+
+*Requirements:*
+1. Do we need =pixi=? Try using the =uv= shebang only (no =pixi=).
+2. Reuse the model file we exported earlier (=models/pet-mad-s-v1.1.0.pt=).
+3. Compare the "User Time" of this script vs the EON script.
+
+*Hint:* You will need the =metatomic= package to load the potential in ASE.
+
+#+begin_solution
+#+begin_src python :tangle data/ase_min.py
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "ase",
+#     "metatomic",
+#     "numpy",
+# ]
+# ///
+
+from ase.io import read
+from ase.optimize import LBFGS
+from metatomic.torch.ase_calculator import MetatomicCalculator
+
+def run_ase_min():
+    atoms = read("pos.con")
+    
+    # Reuse the .pt file exported by the previous script
+    atoms.calc = MetatomicCalculator(
+        "models/pet-mad-s-v1.1.0.pt", 
+        device="cpu"
+    )
+
+    # Setup Optimizer
+    print(f"Initial Energy: {atoms.get_potential_energy():.5f} eV")
+    
+    opt = LBFGS(atoms, logfile="-") # Log to stdout
+    opt.run(fmax=0.01)
+    
+    print(f"Final Energy:   {atoms.get_potential_energy():.5f} eV")
+
+if __name__ == "__main__":
+    run_ase_min()
+#+end_src
+
+#+begin_example
+Initial Energy: -53.90300 eV
+       Step     Time          Energy          fmax
+....
+LBFGS:   64 20:42:09      -54.042595        0.017080
+LBFGS:   65 20:42:09      -54.042610        0.009133
+Final Energy:   -54.04261 eV
+#+end_example
+
+So we get the same result, but with more steps...
+
+** Key Features of the Pixibang
+
+1.  *The Shebang:* =#!/usr/bin/env -S pixi run python= tells the shell to use
+    =pixi= to execute the script.
+2.  *Channels:* We can specify =conda-forge= (for general tools) and
+    =lab-cosmo= (where the EON package lives).
+3.  *Binary Access:* Because we listed =eon= in the dependencies, the
+    =eonclient= binary is automatically downloaded and added to the path when
+    the script runs.
+
+This file is now a completely portable scientific workflow. You can email it to a
+collaborator, and if they have =pixi= installed, they can run your simulation
+without compiling a single line of C++.
+
+#+begin_challenge
+{{{mdheader(## Challenge: When to use what?)}}}
+
+You have three scenarios. Which tool (=pip=, =uv=, or =pixi=) fits best?
+
+1. You are writing a quick script to plot a CSV file using =matplotlib=.
+2. You are writing a workflow that needs to run =openmm= and =ffmpeg= (to make movies).
+3. You are working on a machine where you don't have permission to install Conda, but you can use a virtual environment.
+
+#+begin_solution
+1. *uv (PEP 723):* Perfect for pure Python dependencies like +matplotlib+. It's fast and standard.
+2. *pixi:* Perfect here. =openmm= and =ffmpeg= are complex binary dependencies that are often painful to install via =pip= alone.
+3. *pip/uv:* If you cannot use Conda/Pixi, standard Python tools are your fallback, though you might have to install system libraries manually.
+#+end_solution
+#+end_challenge
+
+| Feature        | EON Script (Pixi)         | ASE Script (UV)        |
+| *Shebang*      | =pixi exec ... -- uv run= | =uv run=               |
+| *Engine*       | C++ Binary (=eonclient=)  | Python Loop (=LBFGS=)  |
+| *Dependencies* | System + Python           | Pure Python            |
+| *Use Case*     | HPC / Heavy Simulations   | Analysis / Prototyping |
+
+While the Python version seems easier to setup, the eOn C++ client is often more performant, and equally trivial with the c.
+
+#+begin_keypoints
+- *PEP 723* allows inline metadata for Python dependencies.
+- Use *uv* to run single-file scripts with pure Python requirements (=numpy=, =pandas=).
+- Use *Pixi* when your script depends on system libraries or compiled binaries (=eonclient=, =ffmpeg=).
+- Combine them with a *Pixibang* (=pixi exec ... -- uv run=) for fully reproducible, complex scientific workflows.
+#+end_keypoints
+
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook 'export-as-workbench-md nil t)
+# End:
