@@ -195,7 +195,7 @@ requires:
 [**Metatrain/Torch**](https://docs.metatensor.org/metatrain/latest/index.html)
 :   For the machine learning potential.
 
-[**rgpycrumbs**](http://rgpycrumbs.rgoswami.me/)
+[**rgpycrumbs**](https://rgpycrumbs.rgoswami.me/)
 :   For helper utilities.
 
 [**eOn Client**](https://eondocs.org)

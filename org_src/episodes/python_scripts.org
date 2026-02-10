@@ -190,7 +190,7 @@ effectively replicate the PEP 723 experience, but for the entire system stack.
 
 Let's write a script that drives a geometry minimization [fn:: A subset of the [[https://atomistic-cookbook.org/examples/eon-pet-neb/eon-pet-neb.html][Cookbook recipe]] for saddle point optimization]. This requires:
 -  [[https://docs.metatensor.org/metatrain/latest/index.html][*Metatrain/Torch*]] :: For the machine learning potential.
--  [[http://rgpycrumbs.rgoswami.me/][*rgpycrumbs*]] :: For helper utilities.
+-  [[https://rgpycrumbs.rgoswami.me/][*rgpycrumbs*]] :: For helper utilities.
 -  [[https://eondocs.org][*eOn Client*]] :: The compiled C++ binary that actually performs the minimization.
 
 First, we need to create the input geometry file =pos.con= in our directory:
