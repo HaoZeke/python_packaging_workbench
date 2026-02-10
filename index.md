@@ -13,8 +13,8 @@ packages, and reproducible scripts. The teaching philosophy is to cover
 ::: spoiler
 ### Do I know enough Python?
 
-It will suffice to know how to use the interactive terminal or a
-[Jupyter instance](https://jupyter.org/try-jupyter/lab/)…
+Knowledge of the interactive terminal or a [Jupyter
+instance](https://jupyter.org/try-jupyter/lab/) suffices.
 
 ``` python
 a = [3,5,6.0]
@@ -26,8 +26,6 @@ def mysquarer(_a):
 
 mysquarer(a)
 ```
-
-and similar concepts.
 :::
 
 ::: spoiler
