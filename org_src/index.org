@@ -1,0 +1,63 @@
+#+EXPORT_FILE_NAME: ../index.md
+#+OPTIONS: toc:nil author:nil date:nil num:nil title:nil
+#+MACRO: mdheader @@markdown:$1@@
+
+#+begin_export markdown
+---
+site: sandpaper::sandpaper_site
+---
+#+end_export
+
+This lesson teaches how to share Python code, both in the form of packages, and
+reproducible scripts. The teaching philosophy is to cover "good enough"
+practices, with more content linked out when necessary.
+
+** Prerequisites
+- [ ] Basic understanding of Python syntax
+- [ ] Basic understanding of Shell scripts
+
+
+#+begin_spoiler
+
+{{{mdheader(### Do I know enough Python?)}}}
+
+It will suffice to know how to use the interactive terminal or a [[https://jupyter.org/try-jupyter/lab/][Jupyter instance]]...
+
+#+begin_src python
+a = [3,5,6.0]
+
+def mysquarer(_a):
+    for x in _a:
+        x=x**2
+    return _a
+
+mysquarer(a)
+#+end_src
+
+and similar concepts.
+
+#+end_spoiler
+
+#+begin_spoiler
+
+{{{mdheader(### Do I know enough Shell scripting?)}}}
+
+Navigation of the file system through a terminal will suffice, as well as
+remembering that *everything is a file* on Unix systems, as far as the contents
+of the lesson at any rate.
+
+#+begin_src bash :eval never
+# get files in directory
+ls
+# get directory name
+pwd
+# view first few lines of a file
+head readme.org
+#+end_src
+
+
+#+end_spoiler
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook 'export-as-workbench-md nil t)
+# End:
