@@ -1,6 +1,6 @@
 #+EXPORT_FILE_NAME: ../../episodes/modules.md
 #+OPTIONS: toc:nil author:nil date:nil num:nil title:nil
-#+MACRO: mdheader @@markdown:$1@@
+#+MACRO: markdown @@markdown:$1@@
 #+PROPERTY: header-args:python :session onePy :results output :exports both :cache yes :wrap src python
 
 #+begin_export markdown
@@ -75,7 +75,7 @@ module, Python scans these directories *in order*. The first match wins.
    where tools like =pip=, =conda=, or =pixi= place third-party libraries.
 
 #+begin_challenge
-{{{mdheader(## Challenge: Shadowing the Standard Library)}}}
+{{{markdown(## Challenge: Shadowing the Standard Library)}}}
 
 What happens if you create a file named =math.py= in your current folder with
 the following content:
@@ -100,6 +100,43 @@ standard library paths. This is called "Shadowing" and is a common source of
 bugs!
 #+end_solution
 #+end_challenge
+
+#+BEGIN_SRC dot :file ../../episodes/fig/python-import-search-path.png :cmdline -Kdot -Tpng -Gdpi=200 :cache yes :exports none
+digraph ImportLogic {
+    rankdir=TD;
+    node [fontname="Helvetica", style=filled];
+    edge [fontname="Helvetica", fontsize=10];
+
+    start [label="import my_module", shape=invhouse, fillcolor="#d1c4e9"];
+
+    subgraph cluster_path {
+        label="sys.path Search Order";
+        style=dashed;
+        color="#757575";
+        fontcolor="#757575";
+        margin=20;
+
+        cwd [label="1. Current Directory\n('')", shape=box, fillcolor="#ffccbc"];
+        stdlib [label="2. Standard Library\n(/usr/lib/...)", shape=box, fillcolor="#b3e5fc"];
+        site [label="3. Site Packages\n(.../site-packages)", shape=box, fillcolor="#c8e6c9"];
+    }
+
+    success [label="Module Loaded", shape=box, style="rounded,filled", fillcolor="#dcedc8", fontcolor="#33691e"];
+    fail [label="ModuleNotFoundError", shape=octagon, fillcolor="#ffcdd2", fontcolor="#b71c1c"];
+
+    start -> cwd;
+    cwd -> success [label="Found"];
+    cwd -> stdlib [label="Not Found"];
+    stdlib -> success [label="Found"];
+    stdlib -> site [label="Not Found"];
+    site -> success [label="Found"];
+    site -> fail [label="Not Found"];
+}
+#+END_SRC
+
+#+RESULTS[b89543340c8059dcec6d74851cfb6cbdb6791a7b]:
+
+@@markdown:![Search order for packages](fig/python-import-search-path.png)@@
 
 * The Anatomy of a Package
 
@@ -163,7 +200,7 @@ Calculating Center of Mass...
 We have created a package, but it is fragile. It relies entirely on the *Current Working Directory* being in =sys.path=.
 
 #+begin_challenge
-{{{mdheader(## Challenge: Moving Directories)}}}
+{{{markdown(## Challenge: Moving Directories)}}}
 
 1. Exit your python session.
 2. Change your directory to go one level up (outside your project folder): =cd ..=
@@ -181,6 +218,37 @@ ModuleNotFoundError: No module named 'chemlib'
 You moved out of the folder containing =chemlib=. Since the package is not installed in the global =site-packages=, and the current directory no longer contains it, Python's search through =sys.path= fails to find it.
 #+end_solution
 #+end_challenge
+
+#+BEGIN_SRC dot :file ../../episodes/fig/python-package-structure.png :cmdline -Kdot -Tpng -Gdpi=200 :cache yes :exports none
+digraph PackageTree {
+    rankdir=TB;
+    node [shape=note, fontname="Helvetica", style=filled, fillcolor="#ffffff", width=1.8];
+    graph [fontname="Helvetica", fontsize=14];
+
+    subgraph cluster_project {
+        label="project_folder/";
+        style=filled;
+        fillcolor="#e3f2fd"; // Light Blue
+        margin=25;
+
+        script [label="script.py\n(Script)", fillcolor="#fff9c4"]; // Yellow
+
+        subgraph cluster_pkg {
+            label="chemlib/\n(Package)";
+            style=filled;
+            fillcolor="#ffe0b2"; // Orange
+            margin=20;
+
+            init [label="__init__.py\n(Package Marker)", fillcolor="#ffccbc"]; // Deep Orange
+            geo [label="geometry.py\n(Module)"];
+        }
+    }
+}
+#+END_SRC
+
+#+RESULTS[831658e66470ba62e7d469f8cf9e2d99fd7f8258]:
+
+@@markdown:![Directory structure for current setup](fig/python-package-structure.png)@@
 
 To solve this, we need a standard way to tell Python "This package exists, please add it to your search path permanently." This is the job of *Packaging* and *Installation*.
 
