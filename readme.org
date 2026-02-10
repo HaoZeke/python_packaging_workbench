@@ -1,4 +1,4 @@
-* Python Dissemination Lesson
+* Python Dissemination
 
 A lesson on the dissemination of Python code as scripts and packages,
 implemented using the [[https://carpentries.github.io/sandpaper-docs/][The Carpentries Workbench]], sourced from org-mode files.
