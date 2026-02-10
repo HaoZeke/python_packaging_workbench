@@ -17,3 +17,27 @@ Rscript -e 'sandpaper::serve()'
 # ** TODO cleaner generation from org->md
 # i.e. do it in CI and on a separate branch instead of commiting both to the
 # ~main~.
+** References
+While opinionated, the materials also take from existing community resources. Contributions welcome.
+
+- Personal experience
+  + Stuff [[https://rgoswami.me/tags/python/][tagged python]]
+  + RealPython [[https://realpython.com/python-script-structure/][article on scripting]]
+- [[https://packaging.python.org/en/latest/][Python Packaging Authority guide]]
+- [[https://github.com/yngvem/pycon25-tutorial?tab=readme-ov-file][PyCon 25 packaging tutorial]]
+- Scientific Python packaging resources
+  + [[https://learn.scientific-python.org/development/guides/packaging-simple/][Simple packaging]]
+  + [[https://learn.scientific-python.org/development/guides/packaging-compiled/][Compiled project packaging]]
+- [[https://pypackaging-native.github.io/][Py-Packaging native]]
+- PyOpenSci resources
+  + [[https://www.pyopensci.org/python-package-guide/tutorials/intro.html][Python packaging 101]]
+  + [[https://www.pyopensci.org/python-package-guide/package-structure-code/python-package-build-tools.html][Python packaging tools]]
+  + [[https://www.pyopensci.org/python-package-guide/package-structure-code/complex-python-package-builds.html][Complex python package builds]]
+- OxRSE resources
+  + [[https://train.rse.ox.ac.uk/material/HPCu/technology_and_tooling/packaging_dependency_management][Packaging and dependency management]]
+  + 
+- Carpentries
+  + [[https://carpentries-incubator.github.io/python-packaging-publishing/index.html][Incubator lesson]] 
+  + [[https://wehi-education.github.io/python_packaging/index.html][Workbench variant]] (from [[https://github.com/WEHI-Education/python_packaging/][here]])
+- MolSSI education resources
+  + [[https://github.com/MolSSI-Education/python-package-best-practices/][package best practices]]
