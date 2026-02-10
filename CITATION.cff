@@ -5,7 +5,7 @@
 # ensuring that the author list and other fields remain accurate.
 
 cff-version: 1.2.0
-title: FIXME
+title: Python dissemination lesson
 message: >-
   Please cite this lesson using the information in this file
   when you refer to it in publications, and/or if you
@@ -13,10 +13,18 @@ message: >-
   training material.
 type: dataset
 authors:
-  - given-names: FIXME
-    family-names: FIXME
+  - given-names: Rohit
+    family-names: Goswami
+    affiliation: EPFL
+    orcid: https://orcid.org/0000-0002-2393-8056
+repository-code: 'https://github.com/HaoZeke/python_packaging_workbench'
+url: 'https://haozeke.github.io/python_packaging_workbench/'
 abstract: >-
-  FIXME Replace this with a short abstract describing the
-  lesson, e.g. its target audience and main intended
-  learning objectives.
+  Crash course for novice Python users to effectively build and share python
+  packages and scripts.
+keywords:
+  - lesson
+  - scripts
+  - python
+  - packaging
 license: CC-BY-4.0

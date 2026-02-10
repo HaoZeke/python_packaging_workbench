@@ -15,10 +15,10 @@
 carpentry: "incubator"
 
 # Alt-text description of the lesson.
-carpentry_description: "Opinionated best-practices for python packaging"
+carpentry_description: "Opinionated best-practices for dissemenating python scripts and packages"
 
 # Overall title for pages.
-title: "Python packaging"
+title: "Python Dissemination Lesson"
 
 # Date the lesson was created (YYYY-MM-DD, this is empty by default)
 created: 2026-02-10
