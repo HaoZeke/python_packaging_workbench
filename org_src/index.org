@@ -22,7 +22,7 @@ practices, with more content linked out when necessary.
 
 {{{mdheader(### Do I know enough Python?)}}}
 
-It will suffice to know how to use the interactive terminal or a [[https://jupyter.org/try-jupyter/lab/][Jupyter instance]]...
+Knowledge of the interactive terminal or a [[https://jupyter.org/try-jupyter/lab/][Jupyter instance]] suffices.
 
 #+begin_src python
 a = [3,5,6.0]
@@ -34,8 +34,6 @@ def mysquarer(_a):
 
 mysquarer(a)
 #+end_src
-
-and similar concepts.
 
 #+end_spoiler
 

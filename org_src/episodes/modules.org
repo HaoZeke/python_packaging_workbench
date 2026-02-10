@@ -1,0 +1,196 @@
+#+EXPORT_FILE_NAME: ../../episodes/modules.md
+#+OPTIONS: toc:nil author:nil date:nil num:nil title:nil
+#+MACRO: mdheader @@markdown:$1@@
+#+PROPERTY: header-args:python :session onePy :results output :exports both :cache yes :wrap src python
+
+#+begin_export markdown
+---
+title: "Modules, Packages, and The Search Path"
+teaching: 15
+exercises: 5
+---
+#+end_export
+
+#+begin_questions
+- How does Python know where to find the libraries you import?
+- What distinguishes a python "script" from a python "package"?
+- What is an =__init__.py= file?
+#+end_questions
+
+#+begin_objectives
+- Inspect the =sys.path= variable to understand import resolution.
+- Differentiate between built-in modules, installed packages, and local code.
+- Create a minimal local package structure.
+#+end_objectives
+
+* From Scripts to Reusable Code
+
+You have likely written Python scripts before: single files ending in =.py= that
+perform a specific analysis or task. While scripts are excellent for *execution*
+(running a calculation once), they are often poor at facilitating *reuse*.
+
+Imagine you wrote a useful function to calculate the center of mass of a
+molecule in =analysis.py=. A month later, you start a new project and need that
+same function. You have two options:
+
+1.  *Copy and Paste:* You copy the function into your new script.
+    - *Problem:* If you find a bug in the original function, you have to
+      remember to fix it in every copy you made.
+2.  *Importing:* You tell Python to load the code from the original file.
+
+Option 2 is the foundation of Python packaging. To do this effectively, we must
+first understand how Python finds the code you ask for.
+
+* How Python Finds Code
+When you type =import numpy=, Python does not magically know where that code
+lives. It follows a deterministic search procedure. We can see this procedure in
+action using the built-in =sys= module.
+
+#+begin_src python
+import sys
+from pprint import pprint
+
+pprint(sys.path)
+#+end_src
+
+#+RESULTS[9928dfd935ff441f9112b0f45ebc8affdd7148b9]:
+#+begin_src python
+['',
+ '/usr/lib/python314.zip',
+ '/usr/lib/python3.14',
+ '/usr/lib/python3.14/lib-dynload',
+ '/usr/lib/python3.14/site-packages']
+#+end_src
+
+
+The variable =sys.path= is a list of directory strings. When you import a
+module, Python scans these directories *in order*. The first match wins.
+
+1. *The Empty String ('')*: This represents the *current working directory*.
+   This is why you can always import a =helper.py= file if it is sitting right
+   next to your script.
+2. *Standard Library*: Locations like =/usr/lib/python3.*= contain built-ins
+   like =os=, =math=, and =pathlib=.
+3. *Site Packages*: Directories like =site-packages= or =dist-packages= are
+   where tools like =pip=, =conda=, or =pixi= place third-party libraries.
+
+#+begin_challenge
+{{{mdheader(## Challenge: Shadowing the Standard Library)}}}
+
+What happens if you create a file named =math.py= in your current folder with
+the following content:
+
+#+begin_src python
+# math.py
+print("This is my math!")
+def sqrt(x):
+    return "No square roots here."
+#+end_src
+
+And then run python and type =import math=?
+
+#+begin_solution
+Python will import *your* local file instead of the standard library =math=
+module.
+
+*Why?*
+Because the current working directory (represented by =''= in =sys.path=) is
+usually at the top of the list. It finds your =math.py= before scanning the
+standard library paths. This is called "Shadowing" and is a common source of
+bugs!
+#+end_solution
+#+end_challenge
+
+* The Anatomy of a Package
+
+- A *Module* :: Is simply a single file ending in =.py=.
+- A *Package* :: Is a directory containing modules and a special file: =__init__.py=.
+
+Let's create a very simple local package to handle some basic chemistry
+geometry. We will call it =chemlib=.
+
+#+begin_src bash
+mkdir chemlib
+touch chemlib/__init__.py
+#+end_src
+
+Now, create a module inside this directory called =geometry.py=:
+
+#+begin_src python filename="chemlib/geometry.py"
+def center_of_mass(atoms):
+    print("Calculating Center of Mass...")
+    return [0.0, 0.0, 0.0]
+#+end_src
+
+Your directory structure should look like this:
+
+#+begin_src text
+project_folder/
+├── script.py
+└── chemlib/
+    ├── __init__.py
+    └── geometry.py
+#+end_src
+
+* The Role of =__init__.py=
+
+The =__init__.py= file tells Python: "Treat this directory as a package."
+It is the first file executed when you import the package. It can be empty, but it is often used to expose functions to the top level.
+
+Open `chemlib/__init__.py` and add:
+
+#+begin_src python
+print("Loading chemlib package...")
+from .geometry import center_of_mass
+#+end_src
+
+Now, from the =project_folder= (the parent directory), launch Python:
+
+#+begin_src python
+import chemlib
+
+chemlib.center_of_mass([])
+#+end_src
+
+#+begin_example
+Loading chemlib package...
+Calculating Center of Mass...
+[0.0, 0.0, 0.0]
+#+end_example
+
+* The "It Works on My Machine" Problem
+
+We have created a package, but it is fragile. It relies entirely on the *Current Working Directory* being in =sys.path=.
+
+#+begin_challenge
+{{{mdheader(## Challenge: Moving Directories)}}}
+
+1. Exit your python session.
+2. Change your directory to go one level up (outside your project folder): =cd ..=
+3. Start Python and try to run =import chemlib=.
+
+What happens and why?
+
+#+begin_solution
+*Output:*
+#+begin_example
+ModuleNotFoundError: No module named 'chemlib'
+#+end_example
+
+*Reason:*
+You moved out of the folder containing =chemlib=. Since the package is not installed in the global =site-packages=, and the current directory no longer contains it, Python's search through =sys.path= fails to find it.
+#+end_solution
+#+end_challenge
+
+To solve this, we need a standard way to tell Python "This package exists, please add it to your search path permanently." This is the job of *Packaging* and *Installation*.
+
+#+begin_keypoints
+- =sys.path= is the list of directories Python searches for imports.
+- The order of search is: Current Directory -> Standard Library -> Installed Packages.
+- A *Package* is a directory containing an =__init__.py= file.
+- Code that works locally because of the current directory will fail when shared unless properly installed.
+#+end_keypoints
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook 'export-as-workbench-md nil t)
+# End:

@@ -8,7 +8,7 @@ title: "Setup"
 ---
 #+end_export
 
-** Software setup
+* Software setup
 #+begin_discussion
 {{{mdheader(### Details)}}}
 
@@ -54,11 +54,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 #+end_spoiler
 
-# Local Variables:
-# eval: (add-hook 'after-save-hook 'export-as-workbench-md nil t)
-# End:
-
-** Accounts required
+* Accounts required
 To finalize publishing to an index [fn:: Making the code widely available over the net] we need:
 - A Git instance in the cloud :: Any of Github, Gitlab, Sourcehut etc. would work, [[https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github][Github is recommended]].
 - An index account :: For the tutorial [[https://test.pypi.org/account/register/][Test PyPI]] will suffice, for production, an account [[https://pypi.org/account/register/][on PyPI]] would be required as well.
