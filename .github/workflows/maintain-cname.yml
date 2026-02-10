@@ -1,0 +1,25 @@
+name: "Maintain CNAME"
+on:
+  workflow_run:
+    workflows: ["01 Maintain: Build and Deploy Site"]
+    types:
+      - completed
+jobs:
+  restore-cname:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Deployment Branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - name: Write CNAME File
+        run: |
+          echo "pydissem.rgoswami.me" > CNAME
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CNAME
+          git commit -m "Restore custom domain CNAME" || exit 0
+          git push origin gh-pages
