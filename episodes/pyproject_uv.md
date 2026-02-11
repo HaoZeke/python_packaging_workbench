@@ -172,6 +172,11 @@ project_folder/
 │       └── py.typed
 ```
 
+```{=org}
+#+RESULTS[f8aa6f2cce00a7f09ffc523323b0cfc003e91e3c]:
+```
+![Comparison of Flat Layout vs Src Layout folder structures](fig/src-vs-flat-layout.png)
+
 ### Why the `src`{.verbatim} directory?
 
 1.  **Testing against the installed package:** With a flat layout
@@ -181,16 +186,6 @@ project_folder/
 2.  **Cleaner root:** Your root directory defines the **project**
     (config, docs, scripts), while `src`{.verbatim} holds the
     **product** (the source code).
-
-``` bash
-# Copy/Move your geometry.py here
-mv geometry.py src/chemlib
-```
-
-```{=org}
-#+RESULTS[f8aa6f2cce00a7f09ffc523323b0cfc003e91e3c]:
-```
-![Comparison of Flat Layout vs Src Layout folder structures](fig/src-vs-flat-layout.png)
 
 ## Managing Dependencies
 
@@ -249,7 +244,8 @@ performed an **Editable Install**.
 ## Challenge: Update the Geometry Module
 
 Now that `numpy`{.verbatim} is installed, modify
-`src/chemlib/geometry.py`{.verbatim} to use it.
+`src/chemlib/geometry.py`{.verbatim} to use it. Remember to expose the
+functionality within `__init__.py`{.verbatim} as in the previous lesson.
 
 1.  Import `numpy`{.verbatim}.
 2.  Change `center_of_mass`{.verbatim} to accept a list of positions and

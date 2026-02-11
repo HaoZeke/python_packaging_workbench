@@ -172,9 +172,10 @@ project_folder/
 * The Role of =__init__.py=
 
 The =__init__.py= file tells Python: "Treat this directory as a package."
-It is the first file executed when you import the package. It can be empty, but it is often used to expose functions to the top level.
+It is the first file executed when you import the package. It can be empty, but
+it is often used to expose functions to the top level.
 
-Open `chemlib/__init__.py` and add:
+Open =chemlib/__init__.py= and add:
 
 #+begin_src python
 print("Loading chemlib package...")
@@ -215,7 +216,9 @@ ModuleNotFoundError: No module named 'chemlib'
 #+end_example
 
 *Reason:*
-You moved out of the folder containing =chemlib=. Since the package is not installed in the global =site-packages=, and the current directory no longer contains it, Python's search through =sys.path= fails to find it.
+You moved out of the folder containing =chemlib=. Since the package is not
+installed in the global =site-packages=, and the current directory no longer
+contains it, Python's search through =sys.path= fails to find it.
 #+end_solution
 #+end_challenge
 
@@ -250,12 +253,15 @@ digraph PackageTree {
 
 @@markdown:![Directory structure for current setup](fig/python-package-structure.png)@@
 
-To solve this, we need a standard way to tell Python "This package exists, please add it to your search path permanently." This is the job of *Packaging* and *Installation*.
+To solve this, we need a standard way to tell Python "This package exists,
+please add it to your search path permanently." This is the job of *Packaging*
+and *Installation*.
 
 #+begin_keypoints
 - =sys.path= is the list of directories Python searches for imports.
 - The order of search is: Current Directory -> Standard Library -> Installed Packages.
 - A *Package* is a directory containing an =__init__.py= file.
+- The =__init__.py= file is the first file loaded when =import PKG= is run.
 - Code that works locally because of the current directory will fail when shared unless properly installed.
 #+end_keypoints
 

@@ -1,4 +1,4 @@
-#+EXPORT_FILE_NAME: ../../episodes/packaging_with_pyproject.md
+#+EXPORT_FILE_NAME: ../../episodes/pyproject_uv.md
 #+OPTIONS: toc:nil author:nil date:nil num:nil title:nil
 #+MACRO: mdheader @@markdown:$1@@
 #+PROPERTY: header-args:bash :results output :exports both :cache yes :wrap src bash
@@ -124,15 +124,6 @@ project_folder/
 │       └── py.typed
 #+end_example
 
-** Why the =src= directory?
-1.  *Testing against the installed package:* With a flat layout (package in root), running =pytest= often imports the *local folder* instead of the *installed package*. This hides installation bugs (like missing data files).
-2.  *Cleaner root:* Your root directory defines the *project* (config, docs, scripts), while =src= holds the *product* (the source code).
-
-#+begin_src bash
-# Copy/Move your geometry.py here
-mv geometry.py src/chemlib
-#+end_src
-
 #+BEGIN_SRC dot :file ../../episodes/fig/src-vs-flat-layout.png :cmdline -Kdot -Tpng -Gdpi=150 :cache yes :exports none
 digraph Layouts {
     rankdir=TB;
@@ -174,6 +165,10 @@ digraph Layouts {
 #+RESULTS[f8aa6f2cce00a7f09ffc523323b0cfc003e91e3c]:
 
 @@markdown:![Comparison of Flat Layout vs Src Layout folder structures](fig/src-vs-flat-layout.png)@@
+
+** Why the =src= directory?
+1.  *Testing against the installed package:* With a flat layout (package in root), running =pytest= often imports the *local folder* instead of the *installed package*. This hides installation bugs (like missing data files).
+2.  *Cleaner root:* Your root directory defines the *project* (config, docs, scripts), while =src= holds the *product* (the source code).
 
 * Managing Dependencies
 
@@ -225,6 +220,8 @@ This means =uv= has performed an *Editable Install*.
 {{{mdheader(## Challenge: Update the Geometry Module)}}}
 
 Now that =numpy= is installed, modify =src/chemlib/geometry.py= to use it.
+Remember to expose the functionality within =__init__.py= as in the previous
+lesson.
 
 1. Import =numpy=.
 2. Change =center_of_mass= to accept a list of positions and return the mean position using =np.mean=.

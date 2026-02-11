@@ -152,7 +152,7 @@ a package." It is the first file executed when you import the package.
 It can be empty, but it is often used to expose functions to the top
 level.
 
-Open \`chemlib/\_~init~\_\_.py\` and add:
+Open `chemlib/__init__.py`{.verbatim} and add:
 
 ``` python
 print("Loading chemlib package...")
@@ -219,6 +219,8 @@ of **Packaging** and **Installation**.
     Installed Packages.
 -   A **Package** is a directory containing an `__init__.py`{.verbatim}
     file.
+-   The `__init__.py`{.verbatim} file is the first file loaded when
+    `import PKG`{.verbatim} is run.
 -   Code that works locally because of the current directory will fail
     when shared unless properly installed.
 :::

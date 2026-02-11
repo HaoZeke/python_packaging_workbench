@@ -72,7 +72,7 @@ analytics: |
 episodes:
   - python_scripts.md
   - modules.md
-  - packaging_with_pyproject.md
+  - pyproject_uv.md
 
 # Information for Learners
 learners:

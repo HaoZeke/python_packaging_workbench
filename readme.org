@@ -35,9 +35,11 @@ While opinionated, the materials also take from existing community resources. Co
   + [[https://www.pyopensci.org/python-package-guide/package-structure-code/complex-python-package-builds.html][Complex python package builds]]
 - OxRSE resources
   + [[https://train.rse.ox.ac.uk/material/HPCu/technology_and_tooling/packaging_dependency_management][Packaging and dependency management]]
-  + 
+  + Packaging [[https://blog.oxrse.uk/python-packaging-course/introduction/][course]]
 - Carpentries
   + [[https://carpentries-incubator.github.io/python-packaging-publishing/index.html][Incubator lesson]] 
   + [[https://wehi-education.github.io/python_packaging/index.html][Workbench variant]] (from [[https://github.com/WEHI-Education/python_packaging/][here]])
 - MolSSI education resources
   + [[https://github.com/MolSSI-Education/python-package-best-practices/][package best practices]]
+- Blogs
+  + Packaging post by [[https://jevandezande.github.io/blog/package-management-in-python/][Jonathon Vandezande]]
