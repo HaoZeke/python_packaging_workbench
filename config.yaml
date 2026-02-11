@@ -72,6 +72,7 @@ analytics: |
 episodes:
   - python_scripts.md
   - modules.md
+  - pyproject_uv.md
 
 # Information for Learners
 learners:
