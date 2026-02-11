@@ -379,17 +379,23 @@ starts from the project folder. To fix this, we need to
 files somewhere the interpreter will find them. One of the simplest ways
 involves setting the <code class="verbatim">PYTHONPATH</code> terminal
 variable.</p>
-<figure><img src="../fig/The_Installation_Problem/2026-02-11_06-21-53_screenshot.png%5D%5D" alt="The packaging gradient, from the [[https://www.youtube.com/watch?v=iLVNWfPWAC8][Hashemi PyBay’17]] and [[https://rgoswami.me/posts/pycon-in-2020-meta/][Goswami PyCon 2020 presentation]]" class="figure mx-auto d-block"><div class="figcaption">The packaging gradient, from the [[<a href="https://www.youtube.com/watch?v=iLVNWfPWAC8" class="external-link uri">https://www.youtube.com/watch?v=iLVNWfPWAC8</a>][Hashemi
-PyBay’17]] and [[<a href="https://rgoswami.me/posts/pycon-in-2020-meta/" class="external-link uri">https://rgoswami.me/posts/pycon-in-2020-meta/</a>][Goswami
-PyCon 2020 presentation]]</div>
-</figure><div id="the-packaging-timeline" class="callout">
+<figure><img src="../fig/The_Installation_Problem/2026-02-11_06-21-53_screenshot.png" alt="The packaging gradient, from the Hashemi PyBay’17 and Goswami PyCon 2020 presentation" class="figure mx-auto d-block"><div class="figcaption">The packaging gradient, from the <a href="https://www.youtube.com/watch?v=iLVNWfPWAC8" class="external-link">Hashemi PyBay’17</a>
+and <a href="https://rgoswami.me/posts/pycon-in-2020-meta" class="external-link">Goswami PyCon
+2020</a> presentation</div>
+</figure><div id="callout1" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="the-packaging-timeline" class="callout-inner">
-<h3 class="callout-title">The Packaging Timeline</h3>
+<div class="callout-inner">
 <div class="callout-content">
+<div id="accordionSpoiler1" class="accordion spoiler-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button spoiler-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSpoiler1" aria-expanded="false" aria-controls="collapseSpoiler1">
+  <h3 class="accordion-header" id="headingSpoiler1">  <div class="note-square"><i aria-hidden="true" class="callout-icon" data-feather="eye"></i></div> The Packaging Timeline </h3>
+</button>
+<div id="collapseSpoiler1" class="accordion-collapse collapse" data-bs-parent="#accordionSpoiler1" aria-labelledby="headingSpoiler1">
+<div class="accordion-body">
 <p>An annotated timeline of tooling:</p>
 <dl><dt>2003</dt>
 <dd>
@@ -470,6 +476,10 @@ package build.
 </dl></div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 </section><section><h2 class="section-heading" id="enter-uv">Enter <code class="verbatim">uv</code>
 <a class="anchor" aria-label="anchor" href="#enter-uv"></a></h2>
 <hr class="half-width"><p>Sometime in the early 2020s Python projects began adopting a Rust
@@ -478,13 +488,14 @@ core. Starting with <code class="verbatim">ruff</code> and moving up to
 in the past few years, these tools are often able cache aggressively,
 and provide saner resolution of versions and other requirements for
 packaging.</p>
-<p>We will use <strong>uv</strong>, an extremely fast, modern Python
-package manager, which also doubles as <a href="https://packaging.python.org/en/latest/glossary/#term-Build-Frontend" class="external-link">a
+<p>We will use <strong>uv</strong>, a convenient, modern Python package
+manager, which also doubles as <a href="https://packaging.python.org/en/latest/glossary/#term-Build-Frontend" class="external-link">a
 frontend</a>, replacing <code class="verbatim">pip</code> with <code class="verbatim">uv pip</code> and a backend for pure Python
 distributions.</p>
 </section><section><h2 class="section-heading" id="initializing-a-project">Initializing a Project<a class="anchor" aria-label="anchor" href="#initializing-a-project"></a></h2>
 <hr class="half-width"><p>Let’s turn our <code class="verbatim">chemlib</code> folder into a
-proper project. We will use `uv init` to generate the configuration.</p>
+proper project. We will use <code class="verbatim">uv init</code> to
+generate the configuration.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -514,12 +525,12 @@ proper project. We will use `uv init` to generate the configuration.</p>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="ex">build-backend</span> = <span class="st">"uv_build"</span></span></code></pre>
 </div>
 </section><section><h2 class="section-heading" id="breakdown">Breakdown<a class="anchor" aria-label="anchor" href="#breakdown"></a></h2>
-<hr class="half-width"><dl><dt><strong><span class="math display">\[project\]</span></strong></dt>
+<hr class="half-width"><dl><dt><code class="verbatim">[project]</code></dt>
 <dd>
 This table is standardized by <strong>PEP 621</strong>. It defines
 <strong>what</strong> your package is (name, version, dependencies).
 </dd>
-<dt><strong><span class="math display">\[build-system\]</span></strong></dt>
+<dt><code class="verbatim">[build-system]</code></dt>
 <dd>
 This defines <strong>how</strong> to build it, with an <a href="https://packaging.python.org/en/latest/glossary/#term-Build-Backend" class="external-link">appropriate
 build backend</a>. <code class="verbatim">uv</code> defaults to <code class="verbatim">uv_build</code><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.

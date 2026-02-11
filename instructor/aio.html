@@ -497,7 +497,7 @@ Python, what happens when they run it?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p><strong>It crashes.</strong></p>
 <div class="codewrapper sourceCode" id="cb5">
@@ -740,11 +740,11 @@ VERSION: 01e09a5
 Minimization converged within tolerence
 Saving result to min.con
 Final Energy: -54.04261779785156</code></pre>
-<div id="challenge-the-pure-python-minimization" class="callout challenge">
+<div id="challenge-the-pure-python-minimization" class="callout discussion">
 <div class="callout-square">
-<i class="callout-icon" data-feather="zap"></i>
+<i class="callout-icon" data-feather="message-circle"></i>
 </div>
-<span class="callout-header">Challenge</span>
+<span class="callout-header">Discussion</span>
 <div id="challenge-the-pure-python-minimization" class="callout-inner">
 <h3 class="callout-title">Challenge: The Pure Python Minimization</h3>
 <div class="callout-content">
@@ -754,22 +754,26 @@ built-in <code class="verbatim">LBFGS</code> optimizer instead of
 eOn.</p>
 <p><strong>Requirements:</strong></p>
 <ol style="list-style-type: decimal">
-<li>Do we need <code class="verbatim">pixi</code>? Try using the <code class="verbatim">uv</code> shebang only (no <code class="verbatim">pixi</code>).</li>
-<li>Reuse the model file we exported earlier (<code class="verbatim">models/pet-mad-s-v1.1.0.pt</code>).</li>
-<li>Compare the “User Time” of this script vs the EON script.</li>
-</ol>
+<li><p>Do we need <code class="verbatim">pixi</code>? Try using the
+<code class="verbatim">uv</code> shebang only (no <code class="verbatim">pixi</code>).</p></li>
+<li><p>Reuse the model file we exported earlier (<code class="verbatim">models/pet-mad-s-v1.1.0.pt</code>).</p></li>
+<li>
+<p>Compare the “User Time” of this script vs the EON script.</p>
+<div id="accordionHint1" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button hint-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHint1" aria-expanded="false" aria-controls="collapseHint1">
+  <h4 class="accordion-header" id="headingHint1"> Give me a hint </h4>
+</button>
+<div id="collapseHint1" class="accordion-collapse collapse" aria-labelledby="headingHint1" data-bs-parent="#accordionHint1">
+<div class="accordion-body">
 <p><strong>Hint:</strong> You will need the <code class="verbatim">metatomic</code> package to load the potential in
 ASE.</p>
 </div>
 </div>
 </div>
-<div id="accordionSolution2" class="accordion challenge-accordion accordion-flush">
-<div class="accordion-item">
-<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
-  <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
-</button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
-<div class="accordion-body">
+</div>
+</li>
+</ol>
 <div class="codewrapper sourceCode" id="cb12" tangle="data/ase_min.py">
 <h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -813,6 +817,66 @@ LBFGS:   64 20:42:09      -54.042595        0.017080
 LBFGS:   65 20:42:09      -54.042610        0.009133
 Final Energy:   -54.04261 eV</code></pre>
 <p>So we get the same result, but with more steps…</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="key-features-of-the-pixibang">Key Features of the Pixibang<a class="anchor" aria-label="anchor" href="#key-features-of-the-pixibang"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>
+<strong>The Shebang:</strong> <code class="verbatim">#!/usr/bin/env -S pixi run python</code> tells the
+shell to use <code class="verbatim">pixi</code> to execute the
+script.</li>
+<li>
+<strong>Channels:</strong> We can specify <code class="verbatim">conda-forge</code> (for general tools) and <code class="verbatim">lab-cosmo</code> (where the EON package lives).</li>
+<li>
+<strong>Binary Access:</strong> Because we listed <code class="verbatim">eon</code> in the dependencies, the <code class="verbatim">eonclient</code> binary is automatically downloaded and
+added to the path when the script runs.</li>
+</ol>
+<p>This file is now a completely portable scientific workflow. You can
+email it to a collaborator, and if they have <code class="verbatim">pixi</code> installed, they can run your simulation
+without compiling a single line of C++.</p>
+<div id="challenge-when-to-use-what" class="callout challenge">
+<div class="callout-square">
+<i class="callout-icon" data-feather="zap"></i>
+</div>
+<span class="callout-header">Challenge</span>
+<div id="challenge-when-to-use-what" class="callout-inner">
+<h3 class="callout-title">Challenge: When to use what?</h3>
+<div class="callout-content">
+<p>You have three scenarios. Which tool (<code class="verbatim">pip</code>, <code class="verbatim">uv</code>, or <code class="verbatim">pixi</code>) fits best?</p>
+<ol style="list-style-type: decimal">
+<li>You are writing a quick script to plot a CSV file using <code class="verbatim">matplotlib</code>.</li>
+<li>You are writing a workflow that needs to run <code class="verbatim">openmm</code> and <code class="verbatim">ffmpeg</code>
+(to make movies).</li>
+<li>You are working on a machine where you don’t have permission to
+install Conda, but you can use a virtual environment.</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="accordionSolution2" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
+  <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
+</button>
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div class="accordion-body">
+<ol style="list-style-type: decimal">
+<li>
+<strong>uv (PEP 723):</strong> Perfect for pure Python dependencies
+like <del>matplotlib</del>. It’s fast and standard.</li>
+<li>
+<strong>pixi:</strong> Perfect here. <code class="verbatim">openmm</code> and <code class="verbatim">ffmpeg</code>
+are complex binary dependencies that are often painful to install via
+<code class="verbatim">pip</code> alone.</li>
+<li>
+<strong>pip/uv:</strong> If you cannot use Conda/Pixi, standard
+Python tools are your fallback, though you might have to install system
+libraries manually.</li>
+</ol>
 </div>
 </div>
 </div>
@@ -1015,7 +1079,7 @@ following content:</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>Python will import <strong>your</strong> local file instead of the
 standard library <code class="verbatim">math</code> module.</p>
@@ -1122,7 +1186,7 @@ folder): <code class="verbatim">cd ..</code>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p><strong>Output:</strong></p>
 <pre class="example"><code>ModuleNotFoundError: No module named 'chemlib'</code></pre>
@@ -1217,17 +1281,23 @@ starts from the project folder. To fix this, we need to
 files somewhere the interpreter will find them. One of the simplest ways
 involves setting the <code class="verbatim">PYTHONPATH</code> terminal
 variable.</p>
-<figure><img src="../fig/The_Installation_Problem/2026-02-11_06-21-53_screenshot.png%5D%5D" alt="The packaging gradient, from the [[https://www.youtube.com/watch?v=iLVNWfPWAC8][Hashemi PyBay’17]] and [[https://rgoswami.me/posts/pycon-in-2020-meta/][Goswami PyCon 2020 presentation]]" class="figure mx-auto d-block"><div class="figcaption">The packaging gradient, from the [[<a href="https://www.youtube.com/watch?v=iLVNWfPWAC8" class="external-link uri">https://www.youtube.com/watch?v=iLVNWfPWAC8</a>][Hashemi
-PyBay’17]] and [[<a href="https://rgoswami.me/posts/pycon-in-2020-meta/" class="external-link uri">https://rgoswami.me/posts/pycon-in-2020-meta/</a>][Goswami
-PyCon 2020 presentation]]</div>
-</figure><div id="the-packaging-timeline" class="callout">
+<figure><img src="../fig/The_Installation_Problem/2026-02-11_06-21-53_screenshot.png" alt="The packaging gradient, from the Hashemi PyBay’17 and Goswami PyCon 2020 presentation" class="figure mx-auto d-block"><div class="figcaption">The packaging gradient, from the <a href="https://www.youtube.com/watch?v=iLVNWfPWAC8" class="external-link">Hashemi PyBay’17</a>
+and <a href="https://rgoswami.me/posts/pycon-in-2020-meta" class="external-link">Goswami PyCon
+2020</a> presentation</div>
+</figure><div id="callout1" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
 </div>
 <span class="callout-header">Callout</span>
-<div id="the-packaging-timeline" class="callout-inner">
-<h3 class="callout-title">The Packaging Timeline</h3>
+<div class="callout-inner">
 <div class="callout-content">
+<div id="accordionSpoiler1" class="accordion spoiler-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button spoiler-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSpoiler1" aria-expanded="false" aria-controls="collapseSpoiler1">
+  <h3 class="accordion-header" id="headingSpoiler1">  <div class="note-square"><i aria-hidden="true" class="callout-icon" data-feather="eye"></i></div> The Packaging Timeline </h3>
+</button>
+<div id="collapseSpoiler1" class="accordion-collapse collapse" data-bs-parent="#accordionSpoiler1" aria-labelledby="headingSpoiler1">
+<div class="accordion-body">
 <p>An annotated timeline of tooling:</p>
 <dl>
 <dt>2003</dt>
@@ -1310,6 +1380,10 @@ package build.
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 </section><section><h2 class="section-heading" id="enter-uv">Enter <code class="verbatim">uv</code>
 <a class="anchor" aria-label="anchor" href="#enter-uv"></a>
 </h2>
@@ -1320,15 +1394,16 @@ core. Starting with <code class="verbatim">ruff</code> and moving up to
 in the past few years, these tools are often able cache aggressively,
 and provide saner resolution of versions and other requirements for
 packaging.</p>
-<p>We will use <strong>uv</strong>, an extremely fast, modern Python
-package manager, which also doubles as <a href="https://packaging.python.org/en/latest/glossary/#term-Build-Frontend" class="external-link">a
+<p>We will use <strong>uv</strong>, a convenient, modern Python package
+manager, which also doubles as <a href="https://packaging.python.org/en/latest/glossary/#term-Build-Frontend" class="external-link">a
 frontend</a>, replacing <code class="verbatim">pip</code> with <code class="verbatim">uv pip</code> and a backend for pure Python
 distributions.</p>
 </section><section><h2 class="section-heading" id="initializing-a-project">Initializing a Project<a class="anchor" aria-label="anchor" href="#initializing-a-project"></a>
 </h2>
 <hr class="half-width">
 <p>Let’s turn our <code class="verbatim">chemlib</code> folder into a
-proper project. We will use `uv init` to generate the configuration.</p>
+proper project. We will use <code class="verbatim">uv init</code> to
+generate the configuration.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1361,12 +1436,12 @@ proper project. We will use `uv init` to generate the configuration.</p>
 </h2>
 <hr class="half-width">
 <dl>
-<dt><strong><span class="math display">\[project\]</span></strong></dt>
+<dt><code class="verbatim">[project]</code></dt>
 <dd>
 This table is standardized by <strong>PEP 621</strong>. It defines
 <strong>what</strong> your package is (name, version, dependencies).
 </dd>
-<dt><strong><span class="math display">\[build-system\]</span></strong></dt>
+<dt><code class="verbatim">[build-system]</code></dt>
 <dd>
 This defines <strong>how</strong> to build it, with an <a href="https://packaging.python.org/en/latest/glossary/#term-Build-Backend" class="external-link">appropriate
 build backend</a>. <code class="verbatim">uv</code> defaults to <code class="verbatim">uv_build</code><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.
@@ -1853,7 +1928,7 @@ catch this logic error?</li>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>
