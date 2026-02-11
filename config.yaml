@@ -74,6 +74,7 @@ episodes:
   - modules.md
   - pyproject_uv.md
   - quality_assurance.md
+  - release_engineering.md
 
 # Information for Learners
 learners:

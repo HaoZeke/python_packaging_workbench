@@ -76,6 +76,9 @@
     <loc>https://HaoZeke.github.io/python_packaging_workbench/instructor/reference.html</loc>
   </url>
   <url>
+    <loc>https://HaoZeke.github.io/python_packaging_workbench/instructor/release_engineering.html</loc>
+  </url>
+  <url>
     <loc>https://HaoZeke.github.io/python_packaging_workbench/instructor-notes.html</loc>
   </url>
   <url>
@@ -101,5 +104,8 @@
   </url>
   <url>
     <loc>https://HaoZeke.github.io/python_packaging_workbench/reference.html</loc>
+  </url>
+  <url>
+    <loc>https://HaoZeke.github.io/python_packaging_workbench/release_engineering.html</loc>
   </url>
 </urlset>
