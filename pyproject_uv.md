@@ -30,9 +30,10 @@ As far as Python is concerned, an "installation" involves placing the
 files somewhere the interpreter will find them. One of the simplest ways
 involves setting the `PYTHONPATH`{.verbatim} terminal variable.
 
-![The packaging gradient, from the [[https://www.youtube.com/watch?v=iLVNWfPWAC8][Hashemi PyBay'17]] and [[https://rgoswami.me/posts/pycon-in-2020-meta/][Goswami PyCon 2020 presentation]]](fig/The_Installation_Problem/2026-02-11_06-21-53_screenshot.png]])
+![The packaging gradient, from the [Hashemi PyBay'17](https://www.youtube.com/watch?v=iLVNWfPWAC8) and [Goswami PyCon 2020](https://rgoswami.me/posts/pycon-in-2020-meta) presentation](fig/The_Installation_Problem/2026-02-11_06-21-53_screenshot.png)
 
 ::: callout
+::: spoiler
 ### The Packaging Timeline
 
 An annotated timeline of tooling:
@@ -97,6 +98,7 @@ An annotated timeline of tooling:
 :   [PEP 751](https://peps.python.org/pep-0751/) formalizes the
     `pylock.toml`{.verbatim} file.
 :::
+:::
 
 ## Enter `uv`{.verbatim}
 
@@ -106,8 +108,8 @@ Starting with `ruff`{.verbatim} and moving up to `uv`{.verbatim} and
 cache aggressively, and provide saner resolution of versions and other
 requirements for packaging.
 
-We will use **uv**, an extremely fast, modern Python package manager,
-which also doubles as [a
+We will use **uv**, a convenient, modern Python package manager, which
+also doubles as [a
 frontend](https://packaging.python.org/en/latest/glossary/#term-Build-Frontend),
 replacing `pip`{.verbatim} with `uv pip`{.verbatim} and a backend for
 pure Python distributions.
@@ -115,7 +117,7 @@ pure Python distributions.
 ## Initializing a Project
 
 Let's turn our `chemlib`{.verbatim} folder into a proper project. We
-will use \`uv init\` to generate the configuration.
+will use `uv init`{.verbatim} to generate the configuration.
 
 ``` bash
 # First, ensure we are in the project root
@@ -144,11 +146,11 @@ This creates a \`pyproject.toml\` file. Let's inspect it.
 
 ## Breakdown
 
-**\[project\]**
+`[project]`{.verbatim}
 :   This table is standardized by **PEP 621**. It defines **what** your
     package is (name, version, dependencies).
 
-**\[build-system\]**
+`[build-system]`{.verbatim}
 :   This defines **how** to build it, with an [appropriate build
     backend](https://packaging.python.org/en/latest/glossary/#term-Build-Backend).
     `uv`{.verbatim} defaults to `uv_build`{.verbatim}[^5].

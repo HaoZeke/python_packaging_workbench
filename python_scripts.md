@@ -361,14 +361,20 @@ simulation environment (ASE)](https://ase-lib.org/) built-in
 
 1.  Do we need `pixi`{.verbatim}? Try using the `uv`{.verbatim} shebang
     only (no `pixi`{.verbatim}).
+
 2.  Reuse the model file we exported earlier
     (`models/pet-mad-s-v1.1.0.pt`{.verbatim}).
+
 3.  Compare the "User Time" of this script vs the EON script.
 
-**Hint:** You will need the `metatomic`{.verbatim} package to load the
-potential in ASE.
+    ::: hint
+    **Hint:** You will need the `metatomic`{.verbatim} package to load
+    the potential in ASE.
+    :::
 
-::: solution
+```{=org}
+#+begin_solution
+```
 ``` {.python tangle="data/ase_min.py"}
 # /// script
 # requires-python = ">=3.11"
@@ -414,6 +420,45 @@ Final Energy:   -54.04261 eV
 ```
 
 So we get the same result, but with more steps…
+:::
+
+### Key Features of the Pixibang
+
+1.  **The Shebang:** `#!/usr/bin/env -S pixi run python`{.verbatim}
+    tells the shell to use `pixi`{.verbatim} to execute the script.
+2.  **Channels:** We can specify `conda-forge`{.verbatim} (for general
+    tools) and `lab-cosmo`{.verbatim} (where the EON package lives).
+3.  **Binary Access:** Because we listed `eon`{.verbatim} in the
+    dependencies, the `eonclient`{.verbatim} binary is automatically
+    downloaded and added to the path when the script runs.
+
+This file is now a completely portable scientific workflow. You can
+email it to a collaborator, and if they have `pixi`{.verbatim}
+installed, they can run your simulation without compiling a single line
+of C++.
+
+::: challenge
+## Challenge: When to use what?
+
+You have three scenarios. Which tool (`pip`{.verbatim}, `uv`{.verbatim},
+or `pixi`{.verbatim}) fits best?
+
+1.  You are writing a quick script to plot a CSV file using
+    `matplotlib`{.verbatim}.
+2.  You are writing a workflow that needs to run `openmm`{.verbatim} and
+    `ffmpeg`{.verbatim} (to make movies).
+3.  You are working on a machine where you don't have permission to
+    install Conda, but you can use a virtual environment.
+
+::: solution
+1.  **uv (PEP 723):** Perfect for pure Python dependencies like
+    ~~matplotlib~~. It's fast and standard.
+2.  **pixi:** Perfect here. `openmm`{.verbatim} and `ffmpeg`{.verbatim}
+    are complex binary dependencies that are often painful to install
+    via `pip`{.verbatim} alone.
+3.  **pip/uv:** If you cannot use Conda/Pixi, standard Python tools are
+    your fallback, though you might have to install system libraries
+    manually.
 :::
 :::
 
