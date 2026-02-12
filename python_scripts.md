@@ -357,24 +357,18 @@ same minimization on `pos.con`{.verbatim}, but uses the [atomic
 simulation environment (ASE)](https://ase-lib.org/) built-in
 `LBFGS`{.verbatim} optimizer instead of eOn.
 
-**Requirements:**
+::: hint
+**Hint:** You will need the `metatomic`{.verbatim} package to load the
+potential in ASE.
 
-1.  Do we need `pixi`{.verbatim}? Try using the `uv`{.verbatim} shebang
+-   Do we need `pixi`{.verbatim}? Try using the `uv`{.verbatim} shebang
     only (no `pixi`{.verbatim}).
-
-2.  Reuse the model file we exported earlier
+-   Reuse the model file we exported earlier
     (`models/pet-mad-s-v1.1.0.pt`{.verbatim}).
+-   Compare the "User Time" of this script vs the EON script.
+:::
 
-3.  Compare the "User Time" of this script vs the EON script.
-
-    ::: hint
-    **Hint:** You will need the `metatomic`{.verbatim} package to load
-    the potential in ASE.
-    :::
-
-```{=org}
-#+begin_solution
-```
+::: solution
 ``` {.python tangle="data/ase_min.py"}
 # /// script
 # requires-python = ">=3.11"
@@ -420,6 +414,7 @@ Final Energy:   -54.04261 eV
 ```
 
 So we get the same result, but with more steps…
+:::
 :::
 
 ### Key Features of the Pixibang

@@ -24,7 +24,7 @@ exercises: 15
 
 In the domain of scientific Python, "packaging" often refers effectively
 to "binary distribution." When users install libraries such as
-`numpy`{.verbatim}, `torch`{.verbatim}, or `scipy`{.verbatim}, they
+`numpy`{.verbatim}, `torch`{.verbatim}, or `openblas`{.verbatim}, they
 typically download compiled artifacts rather than pure Python scripts.
 
 Investigation of the `site-packages` directory reveals that the core
@@ -32,11 +32,16 @@ logic resides in **Shared Object** files (`.so` on Linux, `.dylib` on
 macOS, `.dll` on Windows). Python functions primarily as the interface.
 
 To distribute high-performance code effectively, one must master the
-pipeline that generates these artifacts:
+pipeline that generates these artifacts consisting of
 
-1.  **Translation**: Generating C wrappers for Fortran/C++ code.
-2.  **Compilation**: Transforming source code into shared objects.
-3.  **Bundling**: Packaging shared objects into Wheels (`.whl`).
+Translation
+:   Generating C wrappers for Fortran/C++ code.
+
+Compilation
+:   Transforming source code into shared objects.
+
+Bundling
+:   Packaging shared objects into Wheels (`.whl`).
 
 ```{=org}
 #+RESULTS[7d9cff6afb9ca6283d98e4f2de3212a6711bfa6e]:
