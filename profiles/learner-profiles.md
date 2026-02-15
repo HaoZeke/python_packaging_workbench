@@ -85,6 +85,5 @@ collaborators can use it.
 Marco will benefit most from the episodes on **compiled extensions** and
 **release engineering**. The Meson build system and
 `cibuildwheel`{.verbatim} pipeline will directly address his
-distribution challenge. The **documentation** and **CI/CD** advanced
-episodes are also relevant for maintaining the long-term health of his
-project.
+distribution challenge. The **documentation** and **CI/CD** episodes are
+also relevant for maintaining the long-term health of his project.

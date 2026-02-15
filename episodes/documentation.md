@@ -20,12 +20,11 @@ exercises: 15
 
 # The Documentation Gap
 
-Our `chemlib`{.verbatim} package now has tests, a changelog, CI, and a
+Our `chemlib`{.verbatim} package now has tests, a changelog, and a
 release pipeline. A collaborator can install it from TestPyPI with a
 single command. But when they type `import chemlib`{.verbatim}, how do
 they know what functions are available? What arguments does
-`center_of_mass`{.verbatim} expect? What does `calc_distance`{.verbatim}
-return?
+`center_of_mass`{.verbatim} expect? What does it return?
 
 Without documentation, the only option is to read the source code. That
 works for you (the author), but it does not scale. New users, reviewers,
@@ -79,25 +78,23 @@ uv run python -c "from chemlib.geometry import center_of_mass; help(center_of_ma
 :::
 
 ::: challenge
-## Challenge: Document the Fortran Wrapper
+## Challenge: Document a Second Function
 
-If you completed the Compiled Extensions episode, `chemlib`{.verbatim}
-also exposes `calc_distance`{.verbatim}. Write a NumPy-style docstring
-for a Python wrapper function that calls the Fortran kernel.
+Imagine you add a helper function `distance`{.verbatim} to
+`chemlib/geometry.py`{.verbatim} that computes the Euclidean distance
+between two points. Write a complete NumPy-style docstring for it.
 
 Your docstring should include:
 
 1.  A one-line summary.
 2.  A `Parameters`{.verbatim} section with types.
 3.  A `Returns`{.verbatim} section.
+4.  An `Examples`{.verbatim} section.
 
 ::: solution
 ``` python
-def calc_distance(r_a, r_b):
+def distance(r_a, r_b):
     """Compute the Euclidean distance between two points.
-
-    This function calls the Fortran ``calc_distance`` subroutine
-    for performance.
 
     Parameters
     ----------
@@ -113,11 +110,12 @@ def calc_distance(r_a, r_b):
 
     Examples
     --------
-    >>> calc_distance([0.0, 0.0, 0.0], [1.0, 1.0, 1.0])
+    >>> distance([0.0, 0.0, 0.0], [1.0, 1.0, 1.0])
     1.7320508075688772
     """
-    from ._geometry_backend import calc_distance as _calc_distance
-    return _calc_distance(r_a, r_b)
+    data_a = np.array(r_a)
+    data_b = np.array(r_b)
+    return float(np.linalg.norm(data_a - data_b))
 ```
 :::
 :::
@@ -266,8 +264,9 @@ the documentation available online. The most common approach in the
 Python ecosystem is **GitHub Pages**, deployed automatically via GitHub
 Actions.
 
-If you completed the CI episode, you already understand workflow files.
-The pattern for documentation deployment is:
+The next episode covers Continuous Integration in detail. For now, the
+key idea is that GitHub Actions can run commands automatically when you
+push code. The pattern for documentation deployment is:
 
 1.  **Build:** Check out the code, install the `docs`{.verbatim} group,
     run `sphinx-build`{.verbatim}.
@@ -341,9 +340,6 @@ and see exactly what the documentation will look like before merging.
 
 ```{=org}
 #+RESULTS[74d350f229fe7f6ee5fe37ad25a660d8fdf68879]:
-```
-```{=org}
-#+RESULTS[]:
 ```
 ![Diagram showing a PR triggering docs.yml, which uploads an artifact, then pr_comment.yml downloading it and posting a preview link as a PR comment](fig/pr-preview-flow.png)
 

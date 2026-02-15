@@ -17,7 +17,8 @@ exercises: 10
     high-performance CI.
 -   Define a test matrix to validate code across multiple Python
     versions and operating systems.
--   Connect CI to the release pipeline from the previous episode.
+-   Connect CI to the release pipeline from the Release Engineering
+    episode.
 :::
 
 # The Limits of Local Hooks

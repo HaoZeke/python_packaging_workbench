@@ -6,9 +6,11 @@ title: "Instructor Notes"
 
 This lesson follows a progressive arc from standalone scripts to
 published packages with compiled extensions. Each episode builds on the
-previous one, so it is important to teach them in order. The total
-teaching time is approximately 2.5 hours of instruction plus 1 hour of
-exercises, suitable for a half-day workshop.
+previous one, so it is important to teach them in order. The full lesson
+spans eight episodes with approximately 3 hours of instruction plus 1.5
+hours of exercises, suitable for a full-day workshop. A half-day
+workshop can cover the first five episodes (through Release
+Engineering), with the remaining three assigned as self-study.
 
 The running example is a small computational chemistry library
 (`chemlib`{.verbatim}) that evolves from a single script into a full
@@ -88,32 +90,45 @@ serves only as a realistic motivating example.
 -   Common issue: package name collisions on Test PyPI. Have learners
     use unique suffixes (e.g., `chemlib-<username>`{.verbatim}).
 
-## Compiled Extensions: The Shared Object Pipeline (35 min teaching / 15 min exercises)
+## If It Isn't Documented, It Doesn't Exist (25 min teaching / 15 min exercises)
 
--   This is the most advanced episode. Gauge the audience and consider
-    making it optional for a shorter workshop.
--   Learners without Fortran experience should not worry; the Fortran
-    code is provided and the focus is on the build pipeline, not the
-    language.
--   The `meson-python`{.verbatim} backend is less common than
-    `setuptools`{.verbatim}. Explain that it exists specifically for
-    compiled code and is used by `numpy`{.verbatim} and
-    `scipy`{.verbatim}.
--   `cibuildwheel`{.verbatim} can take a long time to run in CI.
-    Consider showing pre-recorded output if live demos are not feasible.
--   The "manual install" challenge (copying `.so`{.verbatim} into
-    `site-packages`{.verbatim}) is deliberately low-level. It
-    demystifies what `pip install`{.verbatim} actually does under the
-    hood and helps learners appreciate why build tools exist.
--   If a learner's system lacks a Fortran compiler, they can still
-    follow along conceptually; the `f2py`{.verbatim} output is shown in
-    the lesson.
+This episode focuses on docstrings and Sphinx. It assumes learners
+already have a working, tested package with a release pipeline.
+
+-   Start with docstrings, not Sphinx. The "write a NumPy-style
+    docstring" exercise gives learners an immediate, tangible skill even
+    if they never set up Sphinx.
+-   Sphinx configuration can feel overwhelming. The episode uses a
+    minimal `conf.py`{.verbatim} with only three extensions:
+    `autoapi`{.verbatim}, `viewcode`{.verbatim}, and
+    `intersphinx`{.verbatim}. Resist the urge to add more.
+-   The Shibuya theme is recommended for its clean modern look, but any
+    theme works. If learners prefer Read the Docs, that is fine.
+-   The `intersphinx`{.verbatim} challenge is a "wow" moment for many
+    learners. Show how a `` :class:`numpy.ndarray` ``{.verbatim}
+    reference in a docstring automatically becomes a hyperlink to the
+    NumPy documentation.
+-   Common issue: the `sys.path.insert`{.verbatim} line in
+    `conf.py`{.verbatim} must point to the correct relative path for
+    your `src`{.verbatim} directory. If `autoapi`{.verbatim} finds zero
+    modules, this is almost always the cause.
+-   The GitHub Pages deployment section introduces GitHub Actions
+    workflow files. Keep it brief; the next episode (CI) covers workflow
+    files in full detail.
+-   The PR preview subsection uses a two-workflow pattern (build +
+    comment). If learners ask why, explain the security model: the build
+    runs with the PR author's limited permissions, while the comment
+    workflow runs with write access only after a successful build. This
+    prevents malicious PRs from exploiting elevated permissions.
+-   If time is short, the PR preview can be skipped or shown as a demo.
+    The core value of the episode is docstrings + Sphinx + autoapi.
 
 ## The Gatekeeper: Continuous Integration (20 min teaching / 10 min exercises)
 
 This episode follows naturally from Quality Assurance (local hooks) and
 Release Engineering (manual publishing). It closes the loop by
-automating both.
+automating both. Learners will have already seen a workflow file in the
+Documentation episode, so the YAML structure should not be entirely new.
 
 -   Many learners will not have used GitHub Actions before. Start by
     explaining the YAML structure: `on`{.verbatim} (triggers),
@@ -137,63 +152,37 @@ automating both.
 -   If time is short, skip the matrix and just show the basic single-OS
     pipeline. The matrix can be assigned as homework.
 
-## If It Isn't Documented, It Doesn't Exist (25 min teaching / 15 min exercises)
+## Compiled Extensions: The Shared Object Pipeline (35 min teaching / 15 min exercises)
 
-This episode focuses on docstrings and Sphinx. It assumes learners
-already have a working package with tests (and ideally CI from the
-previous episode).
+This is the most advanced episode and serves as the capstone of the
+lesson. By this point learners have the full toolchain (packaging,
+testing, docs, CI) and are ready to tackle the binary distribution
+problem.
 
--   Start with docstrings, not Sphinx. The "write a NumPy-style
-    docstring" exercise gives learners an immediate, tangible skill even
-    if they never set up Sphinx.
--   Sphinx configuration can feel overwhelming. The episode uses a
-    minimal `conf.py`{.verbatim} with only three extensions:
-    `autoapi`{.verbatim}, `viewcode`{.verbatim}, and
-    `intersphinx`{.verbatim}. Resist the urge to add more.
--   The Shibuya theme is recommended for its clean modern look, but any
-    theme works. If learners prefer Read the Docs, that is fine.
--   The `intersphinx`{.verbatim} challenge is a "wow" moment for many
-    learners. Show how a `` :class:`numpy.ndarray` ``{.verbatim}
-    reference in a docstring automatically becomes a hyperlink to the
-    NumPy documentation.
--   Common issue: the `sys.path.insert`{.verbatim} line in
-    `conf.py`{.verbatim} must point to the correct relative path for
-    your `src`{.verbatim} directory. If `autoapi`{.verbatim} finds zero
-    modules, this is almost always the cause.
--   The GitHub Pages deployment section at the end is intentionally
-    brief; by this point learners are familiar with workflow files from
-    the CI episode.
--   The PR preview subsection uses a two-workflow pattern (build +
-    comment). If learners ask why, explain the security model: the build
-    runs with the PR author's limited permissions, while the comment
-    workflow runs with write access only after a successful build. This
-    prevents malicious PRs from exploiting elevated permissions.
--   If time is short, the PR preview can be skipped or shown as a demo.
-    The core value of the episode is docstrings + Sphinx + autoapi.
+-   Gauge the audience and consider making it optional for a shorter
+    workshop.
+-   Learners without Fortran experience should not worry; the Fortran
+    code is provided and the focus is on the build pipeline, not the
+    language.
+-   The `meson-python`{.verbatim} backend is less common than
+    `setuptools`{.verbatim}. Explain that it exists specifically for
+    compiled code and is used by `numpy`{.verbatim} and
+    `scipy`{.verbatim}.
+-   `cibuildwheel`{.verbatim} can take a long time to run in CI.
+    Consider showing pre-recorded output if live demos are not feasible.
+    Learners now understand CI from the previous episode, so the
+    `cibuildwheel`{.verbatim} matrix diagram should feel familiar.
+-   The "manual install" challenge (copying `.so`{.verbatim} into
+    `site-packages`{.verbatim}) is deliberately low-level. It
+    demystifies what `pip install`{.verbatim} actually does under the
+    hood and helps learners appreciate why build tools exist.
+-   If a learner's system lacks a Fortran compiler, they can still
+    follow along conceptually; the `f2py`{.verbatim} output is shown in
+    the lesson.
 
 # Suggested Workshop Schedules
 
-## Half-Day Workshop (3.5 hours)
-
-  Time            Activity
-  --------------- -------------------------------
-  09:00 - 09:30   Reproducible Python (Scripts)
-  09:30 - 09:50   Modules and the Search Path
-  09:50 - 10:00   **Break**
-  10:00 - 10:30   pyproject.toml with uv
-  10:30 - 11:00   Quality Assurance
-  11:00 - 11:10   **Break**
-  11:10 - 11:50   Release Engineering
-  11:50 - 12:30   Compiled Extensions (or Q&A)
-
-## Shorter Session (2 hours)
-
-For a 2-hour session, cover episodes 1-4 (Scripts through Quality
-Assurance) and assign Release Engineering and Compiled Extensions as
-self-study. This gives learners a complete workflow from script to
-tested package.
-
-## Full-Day Workshop (with all topics)
+## Half-Day Workshop (3.5 hours, episodes 1-5)
 
   Time            Activity
   --------------- ---------------------------------
@@ -204,35 +193,55 @@ tested package.
   10:30 - 11:00   Quality Assurance
   11:00 - 11:10   **Break**
   11:10 - 11:50   Release Engineering
-  11:50 - 12:40   Compiled Extensions
-  12:40 - 13:40   **Lunch**
-  13:40 - 14:10   Continuous Integration
-  14:10 - 14:50   Documentation
+  11:50 - 12:30   Q&A / Apply to your own project
+
+This covers the core "script to published package" arc. Documentation,
+CI, and Compiled Extensions can be assigned as self-study or covered in
+a follow-up session.
+
+## Shorter Session (2 hours, episodes 1-4)
+
+Cover Scripts through Quality Assurance. This gives learners a complete
+workflow from script to tested package and can be done without internet
+access (no publishing step).
+
+## Full-Day Workshop (all 8 episodes)
+
+  Time            Activity
+  --------------- ---------------------------------
+  09:00 - 09:30   Reproducible Python (Scripts)
+  09:30 - 09:50   Modules and the Search Path
+  09:50 - 10:00   **Break**
+  10:00 - 10:30   pyproject.toml with uv
+  10:30 - 11:00   Quality Assurance
+  11:00 - 11:10   **Break**
+  11:10 - 11:50   Release Engineering
+  11:50 - 12:30   Documentation
+  12:30 - 13:30   **Lunch**
+  13:30 - 14:00   Continuous Integration
+  14:00 - 14:50   Compiled Extensions
   14:50 - 15:00   **Break**
   15:00 - 15:30   Apply to your own project (Q&A)
 
 # Timing Guide
 
-  Episode               Teaching      Exercises    Total
-  --------------------- ------------- ------------ -------------
-  Reproducible Python   20 min        10 min       30 min
-  Modules               15 min        5 min        20 min
-  pyproject.toml & uv   20 min        10 min       30 min
-  Quality Assurance     20 min        10 min       30 min
-  Release Engineering   25 min        15 min       40 min
-  Compiled Extensions   35 min        15 min       50 min
-  **Core Total**        **135 min**   **65 min**   **200 min**
+  Episode                  Teaching      Exercises    Total
+  ------------------------ ------------- ------------ -------------
+  Reproducible Python      20 min        10 min       30 min
+  Modules                  15 min        5 min        20 min
+  pyproject.toml & uv      20 min        10 min       30 min
+  Quality Assurance        20 min        10 min       30 min
+  Release Engineering      25 min        15 min       40 min
+  Documentation            25 min        15 min       40 min
+  Continuous Integration   20 min        10 min       30 min
+  Compiled Extensions      35 min        15 min       50 min
+  **Total**                **180 min**   **90 min**   **270 min**
 
-  Advanced Episode         Teaching     Exercises    Total
-  ------------------------ ------------ ------------ ------------
-  Documentation            25 min       15 min       40 min
-  Continuous Integration   20 min       10 min       30 min
-  **Advanced Total**       **45 min**   **25 min**   **70 min**
-
-For a half-day workshop (3.5 hours with breaks), the six core episodes
-fit comfortably. For a shorter session, consider stopping after Release
-Engineering and treating Compiled Extensions as self-study material. For
-a full-day workshop, include the advanced episodes in the afternoon.
+For a half-day workshop (3.5 hours with breaks), the first five episodes
+(through Release Engineering) fit comfortably. For a shorter session,
+stop after Quality Assurance. For a full-day workshop, cover all eight
+episodes with Documentation and CI in the late morning and Compiled
+Extensions after lunch.
 
 # Common Pitfalls
 
