@@ -1,3 +1,6 @@
+```{=org}
+#+PROPERTY: header-args:bash :results output :exports both :cache yes :wrap src bash
+```
 ---
 title: "Release Engineering: Logs and Artifacts"
 teaching: 25
@@ -15,7 +18,7 @@ exercises: 15
 -   Publish packages to TestPyPI using `uvx twine`{.verbatim}.
 :::
 
-## The Changelog Problem
+# The Changelog Problem
 
 Before we publish code, we need to tell our users what changed. The
 naive way is to edit a `CHANGELOG.md`{.verbatim} file manually. **The
@@ -28,7 +31,7 @@ Conflicts**.
 ```
 ![Comparison diagram showing manual changelog edits causing merge conflicts versus towncrier compiling separate fragment files](fig/towncrier-flow.png)
 
-### Solution: Towncrier
+## Solution: Towncrier
 
 **Towncrier** solves this by using "News Fragments". Instead of editing
 one big file, you create a tiny file for each change.
@@ -53,7 +56,7 @@ Now, create the news directory:
 mkdir news
 ```
 
-#### Creating a News Fragment
+### Creating a News Fragment
 
 Imagine we just added the `center_of_mass`{.verbatim} function. We
 create a file in `news/`{.verbatim}. The name must end with the type of
@@ -78,7 +81,7 @@ Towncrier will:
 
 No merge conflicts, ever!
 
-## Building Artifacts
+# Building Artifacts
 
 Now that our docs are ready, we need to package our code. Python uses
 two formats:
@@ -103,7 +106,7 @@ Building wheel...
 Successfully built dist/chemlib-0.1.0.tar.gz and dist/chemlib-0.1.0-py3-none-any.whl
 ```
 
-## Publishing to TestPyPI
+# Publishing to TestPyPI
 
 We are finally ready to ship.
 
@@ -190,7 +193,7 @@ Success: .../uv/.../site-packages/chemlib/init.py
 :::
 :::
 
-## Automating Release (GitHub Actions)
+# Automating Release (GitHub Actions)
 
 ::: caution
 **Warning:** This may **not be a good idea**, since PyPI releases cannot
@@ -200,10 +203,9 @@ others locally after ensuring everything works.
 :::
 
 We can teach GitHub to do this for us. We use **Trusted Publishing
-(OIDC)** so we don't even need to copy-paste passwords.
-
-Add a `release`{.verbatim} job to your
-`.github/workflows/ci.yml`{.verbatim}:
+(OIDC)** so we don't even need to copy-paste passwords. The CI episode
+will cover GitHub Actions in full detail; for now, here is a preview of
+what an automated release job looks like:
 
 ``` yaml
 release:
