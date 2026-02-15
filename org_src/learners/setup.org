@@ -35,6 +35,9 @@ Along with ~uv~ from [[https://docs.astral.sh/uv/getting-started/installation/#_
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 #+end_src
 
+After installation, *restart your terminal* (close and reopen PowerShell or
+Command Prompt) so that the PATH changes take effect.
+
 #+end_spoiler
 
 #+begin_spoiler
@@ -52,7 +55,37 @@ Along with ~uv~ [[https://docs.astral.sh/uv/getting-started/installation/#__tabb
 curl -LsSf https://astral.sh/uv/install.sh | sh
 #+end_src
 
+After installation, restart your terminal or run =source ~/.bashrc= (or
+=source ~/.zshrc= on macOS) for the PATH changes to take effect.
+
 #+end_spoiler
+
+* Verifying the installation
+
+After installing both tools, open a *new* terminal and run the following commands
+to confirm everything is working:
+
+#+begin_src bash
+pixi --version
+uv --version
+#+end_src
+
+You should see version numbers printed for both tools. If either command is not
+found, check that the installation directories are on your =PATH= and restart
+your terminal.
+
+Additionally, verify that =git= is available:
+
+#+begin_src bash
+git --version
+#+end_src
+
+If =git= is not installed, follow the [[https://git-scm.com/downloads][official installation instructions]] for your
+platform, or install it via =pixi=:
+
+#+begin_src bash
+pixi global install git
+#+end_src
 
 * Accounts required
 To finalize publishing to an index [fn:: Making the code widely available over the net] we need:
@@ -61,10 +94,21 @@ To finalize publishing to an index [fn:: Making the code widely available over t
 
 #+begin_checklist
 
-- [ ] I have an account on a Git server
-- [ ] I have an account on Test PyPI
+- [ ] I have =pixi= installed and =pixi --version= prints a version number
+- [ ] I have =uv= installed and =uv --version= prints a version number
+- [ ] I have =git= installed and =git --version= prints a version number
+- [ ] I have an account on a Git server (e.g., GitHub)
+- [ ] I have an account on [[https://test.pypi.org/account/register/][Test PyPI]]
 
 #+end_checklist
+
+* Optional: Editor setup
+
+Any text editor will work for this lesson. If you do not have a preference, we
+suggest [[https://code.visualstudio.com/][VS Code]] with the [[https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff][Ruff extension]] for integrated linting and formatting.
+
+Learners comfortable with the terminal can use any editor they prefer (=vim=,
+=emacs=, =nano=, etc.).
 
 # Local Variables:
 # eval: (add-hook 'after-save-hook 'export-as-workbench-md nil t)
